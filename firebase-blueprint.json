@@ -1,0 +1,129 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "A product available in the store",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "price": { "type": "number" },
+        "originalPrice": { "type": "number" },
+        "category": { "type": "string" },
+        "rating": { "type": "number" },
+        "img": { "type": "string" },
+        "description": { "type": "string" },
+        "isTrending": { "type": "boolean" },
+        "stock": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "price", "category", "img"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "A customer order",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "items": { "type": "array" },
+        "total": { "type": "number" },
+        "deliveryCharge": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "processing", "shipped", "delivered", "cancelled"] },
+        "address": { "type": "string" },
+        "phone": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "couponUsed": { "type": "string" }
+      },
+      "required": ["userId", "items", "total", "status", "createdAt"]
+    },
+    "Banner": {
+      "title": "Banner",
+      "description": "Slider banners for the home page",
+      "type": "object",
+      "properties": {
+        "image": { "type": "string" },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "accent": { "type": "string" },
+        "link": { "type": "string" },
+        "order": { "type": "number" }
+      },
+      "required": ["image", "title", "link"]
+    },
+    "Coupon": {
+      "title": "Coupon",
+      "description": "Discount coupons",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string" },
+        "discountType": { "type": "string", "enum": ["percentage", "fixed"] },
+        "discountValue": { "type": "number" },
+        "minAmount": { "type": "number" },
+        "expiryDate": { "type": "string", "format": "date-time" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["code", "discountType", "discountValue", "isActive"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Product category",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "icon": { "type": "string" },
+        "image": { "type": "string" }
+      },
+      "required": ["name", "slug"]
+    },
+    "FlashSale": {
+      "title": "Flash Sale",
+      "description": "Flash sale popup configuration",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "image": { "type": "string" },
+        "link": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "buttonText": { "type": "string" }
+      },
+      "required": ["title", "image", "isActive"]
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Global store configuration",
+      "type": "object",
+      "properties": {
+        "deliveryCharge": { "type": "number" },
+        "freeDeliveryThreshold": { "type": "number" },
+        "contactEmail": { "type": "string" },
+        "contactPhone": { "type": "string" },
+        "whatsapp": { "type": "string" },
+        "telegram": { "type": "string" },
+        "messenger": { "type": "string" }
+      }
+    },
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "User profile containing personal parameters",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "address": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "products": { "schema": "Product", "description": "Collection of products" },
+    "orders": { "schema": "Order", "description": "Collection of orders" },
+    "banners": { "schema": "Banner", "description": "Collection of slider banners" },
+    "coupons": { "schema": "Coupon", "description": "Collection of coupons" },
+    "categories": { "schema": "Category", "description": "Collection of product categories" },
+    "flashSales": { "schema": "FlashSale", "description": "Flash sale popup settings" },
+    "settings": { "schema": "SiteSettings", "description": "Global settings" },
+    "users": { "schema": "UserProfile", "description": "User profile data" }
+  }
+}

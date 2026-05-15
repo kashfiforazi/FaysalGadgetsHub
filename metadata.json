@@ -1,0 +1,6 @@
+{
+  "name": "Faysal Gadgets Hub",
+  "description": "Premium futuristic eCommerce store for high-end gadgets and AI-powered accessories.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

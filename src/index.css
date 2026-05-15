@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Poppins", sans-serif;
+
+  --color-primary: #111827;
+  --color-secondary: #1F2937;
+  --color-accent: #00E5FF;
+  --color-glow: #8B5CF6;
+}
+
+@layer base {
+  body {
+    @apply bg-primary text-white font-sans antialiased transition-colors duration-300;
+  }
+}
+
+.light-theme {
+  --color-primary: #FFFFFF;
+  --color-secondary: #F3F4F6;
+  --color-accent: #0088CC;
+  --color-glow: #7C3AED;
+}
+
+.light-theme body {
+  @apply bg-white text-slate-900;
+}
+
+.light-theme .glass {
+  @apply bg-white/90 backdrop-blur-xl border border-slate-200 shadow-md;
+}
+
+.light-theme .bento-card {
+  @apply bg-slate-50 border-slate-200 shadow-lg text-slate-900;
+}
+
+.light-theme .text-white, 
+.light-theme .text-white\/90,
+.light-theme .text-white\/80,
+.light-theme .text-white\/70,
+.light-theme [class*="text-white"] {
+  @apply text-slate-900;
+}
+
+.light-theme .text-white\/40, 
+.light-theme .text-white\/50, 
+.light-theme .text-white\/60 {
+  @apply text-slate-600;
+}
+
+.light-theme .text-white\/10,
+.light-theme .text-white\/20, 
+.light-theme .text-white\/30 {
+  @apply text-slate-400;
+}
+
+.light-theme .bg-white\/5,
+.light-theme .bg-white\/10,
+.light-theme .bg-white\/20 {
+  @apply bg-slate-100 border-slate-200;
+}
+
+.light-theme .border-white\/5,
+.light-theme .border-white\/10,
+.light-theme .border-white\/20 {
+  @apply border-slate-200;
+}
+
+.light-theme .glass input,
+.light-theme .glass textarea {
+  @apply bg-slate-100 border-slate-200 text-slate-900;
+}
+
+@utility glass {
+  @apply bg-white/10 backdrop-blur-xl border border-white/10;
+}
+
+@utility glow-cyan {
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+}
+
+@utility glow-purple {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+}
+
+@utility bento-card {
+  @apply glass rounded-3xl p-6 transition-all duration-300 hover:scale-[1.02] hover:border-white/20;
+}
+

@@ -1,0 +1,88 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 3. Primitive Definition
+    function isSignedIn() { return request.auth != null; }
+    function isEmailVerified() { return isSignedIn() && request.auth.token.email_verified == true; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function isAdmin() { 
+      return isSignedIn() && (
+        request.auth.token.email == 'mdkawsarforazi.biz@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+
+    // Validation Helpers
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email', 'displayName', 'photoURL', 'role', 'createdAt']) &&
+             data.uid == request.auth.uid &&
+             data.email is string &&
+             data.role in ['user', 'admin'] &&
+             data.createdAt == request.time;
+    }
+
+    function isValidProduct(data) {
+      return data.keys().hasAll(['name', 'price', 'category', 'stock', 'createdAt']) &&
+             data.name is string && data.name.size() <= 200 &&
+             data.price is number && data.price > 0 &&
+             data.stock is int && data.stock >= 0 &&
+             data.createdAt == request.time;
+    }
+
+    // --- Collections ---
+
+    // Users
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) && isValidUser(incoming());
+      allow update: if (isOwner(userId) && incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoURL', 'addresses'])) || isAdmin();
+    }
+
+    // Products
+    match /products/{productId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidProduct(incoming());
+      allow update: if isAdmin() && isValidProduct(incoming());
+      allow delete: if isAdmin();
+
+      match /reviews/{reviewId} {
+        allow read: if true;
+        allow create: if isEmailVerified() && incoming().userId == request.auth.uid && incoming().createdAt == request.time;
+        allow delete: if isAdmin() || (isSignedIn() && existing().userId == request.auth.uid);
+      }
+    }
+
+    // Categories
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Orders
+    match /orders/{orderId} {
+      allow get: if isSignedIn() && (existing().userId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && incoming().userId == request.auth.uid && incoming().status == 'pending' && incoming().createdAt == request.time;
+      allow update: if isAdmin();
+    }
+
+    // Wishlist
+    match /users/{userId}/wishlist/{wishlistId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Admins Collection (optional gate)
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if false; // Only manageable through Firebase Console or Cloud Functions
+    }
+  }
+}
